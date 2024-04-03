@@ -186,13 +186,17 @@ class AppPrefs(private val sharedPreferences: SharedPreferences) {
                 SpaceLongPressBehavior.None,
                 SpaceLongPressBehavior.Enumerate,
                 SpaceLongPressBehavior.ToggleActivate,
-                SpaceLongPressBehavior.ShowPicker
+                SpaceLongPressBehavior.ShowPicker,
+                SpaceLongPressBehavior.ToggleRimeAscii,
+                SpaceLongPressBehavior.SwitchRimeSchema
             ),
             listOf(
                 R.string.space_behavior_none,
                 R.string.space_behavior_enumerate,
                 R.string.space_behavior_activate,
-                R.string.space_behavior_picker
+                R.string.space_behavior_picker,
+                R.string.space_behavior_toggle_ascii,
+                R.string.space_behavior_switch_schema
             )
         )
         val spaceSwipeMoveCursor =
@@ -207,12 +211,16 @@ class AppPrefs(private val sharedPreferences: SharedPreferences) {
             listOf(
                 LangSwitchBehavior.Enumerate,
                 LangSwitchBehavior.ToggleActivate,
-                LangSwitchBehavior.NextInputMethodApp
+                LangSwitchBehavior.NextInputMethodApp,
+                LangSwitchBehavior.ToggleRimeAscii,
+                LangSwitchBehavior.SwitchRimeSchema
             ),
             listOf(
                 R.string.space_behavior_enumerate,
                 R.string.space_behavior_activate,
-                R.string.lang_switch_behavior_next_ime_app
+                R.string.lang_switch_behavior_next_ime_app,
+                R.string.lang_switch_behavior_toggle_ascii,
+                R.string.lang_switch_behavior_switch_schema
             )
         ) { showLangSwitchKey.getValue() }
 
