@@ -32,6 +32,8 @@ class ThemePrefs(sharedPreferences: SharedPreferences) :
 
     val keyBorder = switch(R.string.key_border, "key_border", false)
 
+    val keySymbolBorder = switch(R.string.key_symbol_border, "key_symbol_border", false)
+
     val keyRippleEffect = switch(R.string.key_ripple_effect, "key_ripple_effect", false)
 
     val keyHorizontalMargin: ManagedPreference.PInt
