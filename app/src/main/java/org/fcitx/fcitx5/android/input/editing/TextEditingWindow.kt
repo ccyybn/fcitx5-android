@@ -55,7 +55,7 @@ class TextEditingWindow : InputWindow.ExtendedInputWindow<TextEditingWindow>(),
                     service.cancelSelection()
                 } else {
                     userSelection = !userSelection
-                    updateSelection(false, userSelection)
+                    updateSelection(false, userSelection, service.hasText())
                 }
             }
             selectAllButton.setOnClickListener {
@@ -97,7 +97,7 @@ class TextEditingWindow : InputWindow.ExtendedInputWindow<TextEditingWindow>(),
 
     override fun onSelectionUpdate(start: Int, end: Int) {
         hasSelection = start != end
-        ui.updateSelection(hasSelection, userSelection)
+        ui.updateSelection(hasSelection, userSelection, service.hasText())
     }
 
     override val title by lazy {

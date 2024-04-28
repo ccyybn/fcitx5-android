@@ -68,6 +68,32 @@ class TextEditingUi(override val ctx: Context, private val theme: Theme) : Ui {
             else pressHighlightDrawable(theme.keyPressHighlightColor)
     }
 
+    private fun GTextButton.applySelectBorderedBackground() {
+        text.setTextColor(
+            ColorStateList(
+                arrayOf(
+                    intArrayOf(android.R.attr.state_activated),
+                    intArrayOf(android.R.attr.state_enabled)
+                ),
+                intArrayOf(theme.genericActiveForegroundColor, theme.keyTextColor)
+            )
+        )
+        background = StateListDrawable().apply {
+            addState(
+                intArrayOf(android.R.attr.state_activated),
+                borderDrawable(
+                    borderWidth,
+                    theme.dividerColor,
+                    theme.genericActiveBackgroundColor
+                )
+            )
+            addState(
+                intArrayOf(android.R.attr.state_enabled),
+                borderDrawable(borderWidth, theme.dividerColor)
+            )
+        }
+    }
+
     class GTextButton(context: Context) : CustomGestureView(context) {
         val text = textView {
             isClickable = false
@@ -169,29 +195,7 @@ class TextEditingUi(override val ctx: Context, private val theme: Theme) : Ui {
 
     val selectButton =
         if (keyStyle == ThemePrefs.KeyTextEditingStyle.Linear) textLinearButton(R.string.select).apply {
-            text.setTextColor(
-                ColorStateList(
-                    arrayOf(
-                        intArrayOf(android.R.attr.state_activated),
-                        intArrayOf(android.R.attr.state_enabled)
-                    ),
-                    intArrayOf(theme.genericActiveForegroundColor, theme.keyTextColor)
-                )
-            )
-            background = StateListDrawable().apply {
-                addState(
-                    intArrayOf(android.R.attr.state_activated),
-                    borderDrawable(
-                        borderWidth,
-                        theme.dividerColor,
-                        theme.genericActiveBackgroundColor
-                    )
-                )
-                addState(
-                    intArrayOf(android.R.attr.state_enabled),
-                    borderDrawable(borderWidth, theme.dividerColor)
-                )
-            }
+            applySelectBorderedBackground()
         } else textButton(
             R.string.select,
             KeyDef.Appearance.Variant.Accent
@@ -307,27 +311,54 @@ class TextEditingUi(override val ctx: Context, private val theme: Theme) : Ui {
         })
     }
 
-    fun updateSelection(hasSelection: Boolean, userSelection: Boolean) {
-        selectButton.isActivated = (hasSelection || userSelection)
-        if (selectButton.isActivated) {
-            (selectButton as? TextKeyView)?.onSetVariant(KeyDef.Appearance.Variant.Accent)
+    fun updateSelection(hasSelection: Boolean, userSelection: Boolean, hasText: Boolean) {
+        if (hasText) {
+            selectButton.isActivated = (hasSelection || userSelection)
+            if (selectButton.isActivated) {
+                (selectButton as? TextKeyView)?.onSetVariant(KeyDef.Appearance.Variant.Accent)
+            } else {
+                (selectButton as? TextKeyView)?.onSetVariant(KeyDef.Appearance.Variant.Normal)
+            }
+            (selectButton as? GTextButton)?.apply {
+                applySelectBorderedBackground()
+            }
+            selectButton.isEnabled = true
+            selectAllButton.isEnabled = true
+            leftButton.isEnabled = true
+            rightButton.isEnabled = true
+            upButton.isEnabled = true
+            downButton.isEnabled = true
+            homeButton.isEnabled = true
+            endButton.isEnabled = true
+            backspaceButton.isEnabled = true
+            if (hasSelection) {
+                selectAllButton.visibility = View.GONE
+                cutButton.visibility = View.VISIBLE
+                copyButton.isEnabled = true
+            } else {
+                selectAllButton.visibility = View.VISIBLE
+                cutButton.visibility = View.GONE
+                copyButton.isEnabled = false
+            }
         } else {
             (selectButton as? TextKeyView)?.onSetVariant(KeyDef.Appearance.Variant.Normal)
-        }
-        if (hasSelection) {
-            selectAllButton.apply {
-                visibility = View.GONE
+            (selectButton as? GTextButton)?.apply {
+                text.setTextColor(theme.keyTextColor)
+                applyBorderedBackground()
             }
-            cutButton.apply {
-                visibility = View.VISIBLE
-            }
-        } else {
-            selectAllButton.apply {
-                visibility = View.VISIBLE
-            }
-            cutButton.apply {
-                visibility = View.GONE
-            }
+            selectAllButton.visibility = View.VISIBLE
+            cutButton.visibility = View.GONE
+
+            selectButton.isEnabled = false
+            selectAllButton.isEnabled = false
+            copyButton.isEnabled = false
+            leftButton.isEnabled = false
+            rightButton.isEnabled = false
+            upButton.isEnabled = false
+            downButton.isEnabled = false
+            homeButton.isEnabled = false
+            endButton.isEnabled = false
+            backspaceButton.isEnabled = false
         }
     }
 

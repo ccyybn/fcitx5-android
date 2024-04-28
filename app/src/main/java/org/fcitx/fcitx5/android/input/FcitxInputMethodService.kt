@@ -141,6 +141,13 @@ class FcitxInputMethodService : LifecycleInputMethodService() {
     fun postFcitxJob(block: suspend FcitxAPI.() -> Unit) =
         postJob(fcitx.lifecycleScope) { fcitx.runOnReady(block) }
 
+    fun hasText(): Boolean {
+        if (currentInputSelection.start > 0 || currentInputSelection.end > 0) return true
+        val ic = currentInputConnection ?: return false
+        val text = ic.getTextAfterCursor(1, 0)
+        return !text.isNullOrEmpty()
+    }
+
     override fun onCreate() {
         fcitx = FcitxDaemon.connect(javaClass.name)
         lifecycleScope.launch {
