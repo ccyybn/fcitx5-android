@@ -112,6 +112,7 @@
     <string name="key_text_editing_style_borderless">Borderless key</string>
     <string name="key_text_editing_ripple_effect">Enable text editing key ripple effect</string>
     <string name="key_text_editing_radius">Text editing key radius</string>
+    <string name="clipboard_content_radius">Clipboard content radius</string>
     <string name="key_horizontal_margin">Key horizontal margin</string>
     <string name="key_vertical_margin">Key vertical margin</string>
     <string name="key_text_editing_margin">Text editing key margin</string>
