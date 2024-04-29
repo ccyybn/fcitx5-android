@@ -15,6 +15,8 @@ import android.os.Build
 import android.os.Process
 import android.util.Log
 import androidx.core.content.edit
+import androidx.emoji2.bundled.BundledEmojiCompatConfig
+import androidx.emoji2.text.EmojiCompat
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
@@ -68,6 +70,7 @@ class FcitxApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        EmojiCompat.init(BundledEmojiCompatConfig(this).setReplaceAll(true))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !userManager.isUserUnlocked) {
             isDirectBootMode = true
             registerReceiver(unlockReceiver, IntentFilter(Intent.ACTION_USER_UNLOCKED))

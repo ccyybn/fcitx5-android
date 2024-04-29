@@ -9,10 +9,13 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.text.Spanned
 import android.util.AttributeSet
 import android.view.Gravity
 import android.widget.TextView
-import androidx.core.graphics.withSave
+import androidx.emoji2.text.EmojiCompat
+import androidx.emoji2.text.EmojiCompat.LOAD_STATE_SUCCEEDED
+import androidx.emoji2.text.EmojiSpan
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -29,10 +32,12 @@ class AutoScaleTextView @JvmOverloads constructor(
          * do not scale or ellipse text, overflow when cannot fit width
          */
         None,
+
         /**
          * only scale in X axis, makes text looks "condensed" or "slim"
          */
         Horizontal,
+
         /**
          * scale both in X and Y axis, align center vertically
          */
@@ -52,6 +57,7 @@ class AutoScaleTextView @JvmOverloads constructor(
     private var translateX = 0.0f
     private var textScaleX = 1.0f
     private var textScaleY = 1.0f
+    private val isCompatLoaded = EmojiCompat.get().loadState == LOAD_STATE_SUCCEEDED
 
     override fun setText(charSequence: CharSequence?, bufferType: BufferType) {
         // setText can be called in super constructor
@@ -89,22 +95,62 @@ class AutoScaleTextView @JvmOverloads constructor(
         else -> calculatedSize
     }
 
+    private fun measureCompatTextBounds(spanned: Spanned) {
+        var measured = 0f
+        val spans = spanned.getSpans(
+            0, spanned.length,
+            EmojiSpan::class.java
+        )
+        if (!spans.isNullOrEmpty()) {
+            measured += paint.measureText(text.substring(0, spanned.getSpanStart(spans[0])))
+            for (i in spans.indices) {
+                measured += spans[i].getSize(
+                    paint,
+                    spanned,
+                    spanned.getSpanStart(spans[i]),
+                    spanned.getSpanEnd(spans[i]),
+                    paint.getFontMetricsInt()
+                ).toFloat()
+
+                val afterText = spanned.subSequence(
+                    spanned.getSpanEnd(spans[i]),
+                    if (i + 1 < spans.size) spanned.getSpanStart(spans[i + 1]) else spanned.length
+                ).toString()
+                measured += paint.measureText(afterText)
+            }
+        }
+        textBounds.set(
+            /* left = */ 0,
+            /* top = */ floor(fontMetrics.top).toInt(),
+            /* right = */ ceil(measured).toInt(),
+            /* bottom = */ ceil(fontMetrics.bottom).toInt()
+        )
+    }
+
     private fun measureTextBounds(): Rect {
         if (needsMeasureText) {
             val paint = paint
             paint.getFontMetrics(fontMetrics)
-            val codePointCount = Character.codePointCount(text, 0, text.length)
-            if (codePointCount == 1) {
-                // use actual text bounds when there is only one "character",
-                // eg. full-width punctuation
-                paint.getTextBounds(text, 0, text.length, textBounds)
+
+            var processed: CharSequence? = null
+            if (isCompatLoaded) processed = EmojiCompat.get().process(text)
+
+            if (processed is Spanned) {
+                measureCompatTextBounds(processed)
             } else {
-                textBounds.set(
-                    /* left = */ 0,
-                    /* top = */ floor(fontMetrics.top).toInt(),
-                    /* right = */ ceil(paint.measureText(text)).toInt(),
-                    /* bottom = */ ceil(fontMetrics.bottom).toInt()
-                )
+                val codePointCount = Character.codePointCount(text, 0, text.length)
+                if (codePointCount == 1) {
+                    // use actual text bounds when there is only one "character",
+                    // eg. full-width punctuation
+                    paint.getTextBounds(text, 0, text.length, textBounds)
+                } else {
+                    textBounds.set(
+                        /* left = */ 0,
+                        /* top = */ floor(fontMetrics.top).toInt(),
+                        /* right = */ ceil(paint.measureText(text)).toInt(),
+                        /* bottom = */ ceil(fontMetrics.bottom).toInt()
+                    )
+                }
             }
             needsMeasureText = false
         }
@@ -158,6 +204,49 @@ class AutoScaleTextView @JvmOverloads constructor(
         translateY = (contentHeight.toFloat() - fontHeight) / 2.0f - fontOffsetY + paddingTop
     }
 
+    private fun drawCompatText(canvas: Canvas, spanned: Spanned) {
+        // https://stackoverflow.com/questions/67569629/canvas-drawtext-problem-with-emojicompat-android-java
+        val spans = spanned.getSpans(
+            0, spanned.length,
+            EmojiSpan::class.java
+        )
+        if (!spans.isNullOrEmpty()) {
+            var x = 0f
+            val beforeText = text.substring(0, spanned.getSpanStart(spans[0]))
+            canvas.drawText(beforeText, x, 0f, paint)
+            x += paint.measureText(beforeText)
+
+            for (i in spans.indices) {
+                spans[i].draw(
+                    canvas,
+                    spanned,
+                    spanned.getSpanStart(spans[i]),
+                    spanned.getSpanEnd(spans[i]),
+                    x,
+                    fontMetrics.top.toInt(),
+                    0,
+                    fontMetrics.bottom.toInt(),
+                    paint
+                )
+
+                x += spans[i].getSize(
+                    paint,
+                    spanned,
+                    spanned.getSpanStart(spans[i]),
+                    spanned.getSpanEnd(spans[i]),
+                    paint.getFontMetricsInt()
+                ).toFloat()
+
+                val afterText = spanned.subSequence(
+                    spanned.getSpanEnd(spans[i]),
+                    if (i + 1 < spans.size) spanned.getSpanStart(spans[i + 1]) else spanned.length
+                ).toString()
+                canvas.drawText(afterText, x, 0f, paint)
+                x += paint.measureText(afterText)
+            }
+        }
+    }
+
     override fun onDraw(canvas: Canvas) {
         if (needsCalculateTransform) {
             calculateTransform(width, height)
@@ -165,11 +254,18 @@ class AutoScaleTextView @JvmOverloads constructor(
         }
         val paint = paint
         paint.color = currentTextColor
-        canvas.withSave {
-            translate(scrollX.toFloat(), scrollY.toFloat())
-            scale(textScaleX, textScaleY, 0f, translateY)
-            translate(translateX, translateY)
-            drawText(text, 0f, 0f, paint)
+
+        canvas.translate(scrollX.toFloat(), scrollY.toFloat())
+        canvas.scale(textScaleX, textScaleY, 0f, translateY)
+        canvas.translate(translateX, translateY)
+
+        var processed: CharSequence? = null
+        if (isCompatLoaded) processed = EmojiCompat.get().process(text)
+
+        if (processed is Spanned) {
+            drawCompatText(canvas, processed)
+        } else {
+            canvas.drawText(text, 0f, 0f, paint)
         }
     }
 
