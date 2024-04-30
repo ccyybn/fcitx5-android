@@ -12,7 +12,8 @@ import android.view.textclassifier.TextClassifier
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import splitties.dimensions.dp
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 
 class LogAdapter(private val entries: ArrayList<CharSequence> = ArrayList()) :
@@ -36,7 +37,7 @@ class LogAdapter(private val entries: ArrayList<CharSequence> = ArrayList()) :
     override fun getItemCount() = entries.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = Holder(
-        parent.textView {
+        parent.view(::EmojiTextView) {
             textSize = 12f
             typeface = Typeface.MONOSPACE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

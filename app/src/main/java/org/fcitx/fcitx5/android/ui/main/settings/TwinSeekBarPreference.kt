@@ -28,7 +28,8 @@ import splitties.views.dsl.constraintlayout.topOfParent
 import splitties.views.dsl.core.add
 import splitties.views.dsl.core.horizontalMargin
 import splitties.views.dsl.core.seekBar
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.verticalMargin
 import splitties.views.dsl.core.wrapContent
 import splitties.views.textAppearance
@@ -99,11 +100,11 @@ class TwinSeekBarPreference @JvmOverloads constructor(
         defaultValue: Int? = null,
         belowView: View? = null
     ): SeekBar {
-        val textLabel = textView {
+        val textLabel = view(::EmojiTextView) {
             text = label
             textAppearance = context.resolveThemeAttribute(android.R.attr.textAppearanceListItem)
         }
-        val valueLabel = textView {
+        val valueLabel = view(::EmojiTextView) {
             text = textForValue(initialValue, defaultValue)
             textAppearance = context.resolveThemeAttribute(android.R.attr.textAppearanceListItem)
         }
@@ -139,7 +140,7 @@ class TwinSeekBarPreference @JvmOverloads constructor(
         val secondarySeekBar: SeekBar
         val dialogContent = context.constraintLayout {
             if (dialogMessage != null) {
-                messageText = textView { text = dialogMessage }
+                messageText = view(::EmojiTextView) { text = dialogMessage }
                 add(messageText!!, lParams {
                     verticalMargin = dp(8)
                     horizontalMargin = dp(24)

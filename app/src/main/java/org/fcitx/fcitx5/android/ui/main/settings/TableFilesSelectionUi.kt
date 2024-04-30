@@ -24,7 +24,8 @@ import splitties.views.dsl.constraintlayout.topOfParent
 import splitties.views.dsl.core.Ui
 import splitties.views.dsl.core.add
 import splitties.views.dsl.core.matchParent
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 import splitties.views.textAppearance
 import splitties.views.topPadding
@@ -35,13 +36,13 @@ class TableFilesSelectionUi(override val ctx: Context) : Ui {
         override val ctx: Context
             get() = this@TableFilesSelectionUi.ctx
 
-        val title = textView {
+        val title = view(::EmojiTextView) {
             textAppearance = ctx.resolveThemeAttribute(android.R.attr.textAppearanceListItem)
             setTextColor(styledColor(android.R.attr.textColorPrimary))
             setText(titleRes)
         }
 
-        val summary = textView {
+        val summary = view(::EmojiTextView) {
             textAppearance = ctx.resolveThemeAttribute(android.R.attr.textAppearanceSmall)
             setTextColor(styledColor(android.R.attr.textColorSecondary))
             setText(R.string.table_file_placeholder)

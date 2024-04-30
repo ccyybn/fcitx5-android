@@ -19,7 +19,8 @@ import splitties.views.dsl.core.Ui
 import splitties.views.dsl.core.add
 import splitties.views.dsl.core.imageView
 import splitties.views.dsl.core.styles.AndroidStyles
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 import splitties.views.imageDrawable
 import splitties.views.setPaddingDp
@@ -30,7 +31,7 @@ sealed class ClipboardInstructionUi(override val ctx: Context, protected val the
 
         private val androidStyles = AndroidStyles(ctx)
 
-        private val instructionText = textView {
+        private val instructionText = view(::EmojiTextView) {
             setText(R.string.instruction_enable_clipboard_listening)
             setPaddingDp(12, 8, 12, 8)
             setTextColor(theme.keyTextColor)
@@ -62,7 +63,7 @@ sealed class ClipboardInstructionUi(override val ctx: Context, protected val the
             }
         }
 
-        private val instructionText = textView {
+        private val instructionText = view(::EmojiTextView) {
             setText(R.string.instruction_copy)
             setTextColor(theme.keyTextColor)
         }

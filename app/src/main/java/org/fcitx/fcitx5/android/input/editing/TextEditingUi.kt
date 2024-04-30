@@ -36,7 +36,8 @@ import splitties.views.dsl.core.add
 import splitties.views.dsl.core.horizontalLayout
 import splitties.views.dsl.core.imageView
 import splitties.views.dsl.core.lParams
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 import splitties.views.gravityCenter
 import splitties.views.imageDrawable
@@ -56,7 +57,7 @@ class TextEditingUi(override val ctx: Context, private val theme: Theme) : Ui {
     }
 
     class GTextButton(context: Context) : CustomGestureView(context) {
-        val text = textView {
+        val text = view(::EmojiTextView) {
             isClickable = false
             isFocusable = false
             background = null

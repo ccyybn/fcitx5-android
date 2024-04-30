@@ -96,6 +96,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.emoji2)
+    implementation(libs.androidx.emoji2.views)
     implementation(libs.androidx.emoji2.bundled)
     implementation(libs.androidx.autofill)
     implementation(libs.androidx.constraintlayout)

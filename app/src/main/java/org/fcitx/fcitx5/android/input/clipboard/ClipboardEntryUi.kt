@@ -26,14 +26,15 @@ import splitties.views.dsl.core.add
 import splitties.views.dsl.core.imageView
 import splitties.views.dsl.core.lParams
 import splitties.views.dsl.core.matchParent
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 import splitties.views.imageDrawable
 import splitties.views.setPaddingDp
 
 class ClipboardEntryUi(override val ctx: Context, private val theme: Theme) : Ui {
 
-    val textView = textView {
+    val textView = view(::EmojiTextView) {
         minLines = 1
         maxLines = 4
         textSize = 14f

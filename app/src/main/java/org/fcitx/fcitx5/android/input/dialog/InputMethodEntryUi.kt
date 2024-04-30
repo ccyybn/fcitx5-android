@@ -12,15 +12,16 @@ import splitties.resources.resolveThemeAttribute
 import splitties.resources.styledDimenPxSize
 import splitties.resources.styledDrawable
 import splitties.views.dsl.core.Ui
-import splitties.views.dsl.core.checkedTextView
+import androidx.appcompat.widget.AppCompatCheckedTextView
 import splitties.views.dsl.core.matchParent
 import splitties.views.dsl.core.wrapContent
+import splitties.views.dsl.core.view
 import splitties.views.gravityVerticalCenter
 import splitties.views.textAppearance
 
 // https://android.googlesource.com/platform/frameworks/base.git/+/refs/tags/android-11.0.0_r48/core/res/res/layout/input_method_switch_item.xml
 class InputMethodEntryUi(override val ctx: Context) : Ui {
-    override val root = checkedTextView {
+    override val root = view(::AppCompatCheckedTextView) {
         gravity = gravityVerticalCenter
         minHeight = styledDimenPxSize(android.R.attr.listPreferredItemHeightSmall)
         textAppearance = ctx.resolveThemeAttribute(android.R.attr.textAppearanceListItem)

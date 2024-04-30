@@ -23,7 +23,8 @@ import splitties.views.backgroundColor
 import splitties.views.dsl.core.Ui
 import splitties.views.dsl.core.add
 import splitties.views.dsl.core.lParams
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.verticalLayout
 import splitties.views.horizontalPadding
 
@@ -50,7 +51,7 @@ class PreeditUi(override val ctx: Context, private val theme: Theme) : Ui {
         is Theme.Custom -> theme.backgroundColor
     }
 
-    private fun createTextView() = textView {
+    private fun createTextView() = view(::EmojiTextView) {
         backgroundColor = barBackground
         horizontalPadding = dp(8)
         setTextColor(theme.keyTextColor)

@@ -23,7 +23,8 @@ import splitties.views.dsl.constraintlayout.startOfParent
 import splitties.views.dsl.constraintlayout.topOfParent
 import splitties.views.dsl.core.Ui
 import splitties.views.dsl.core.add
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 import splitties.views.gravityVerticalCenter
 
@@ -31,7 +32,7 @@ class TitleUi(override val ctx: Context, theme: Theme) : Ui {
 
     private val backButton = ToolButton(ctx, R.drawable.ic_baseline_arrow_back_24, theme)
 
-    private val titleText = textView {
+    private val titleText = view(::EmojiTextView) {
         typeface = Typeface.defaultFromStyle(Typeface.BOLD)
         setTextColor(theme.altKeyTextColor)
         gravity = gravityVerticalCenter

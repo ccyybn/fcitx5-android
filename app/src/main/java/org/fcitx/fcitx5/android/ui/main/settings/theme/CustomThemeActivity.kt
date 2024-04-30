@@ -73,7 +73,7 @@ import splitties.views.dsl.constraintlayout.topToTopOf
 import splitties.views.dsl.core.add
 import splitties.views.dsl.core.matchParent
 import splitties.views.dsl.core.seekBar
-import splitties.views.dsl.core.textView
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.view
 import splitties.views.dsl.core.wrapContent
 import splitties.views.dsl.core.wrapInScrollView
@@ -115,7 +115,7 @@ class CustomThemeActivity : AppCompatActivity() {
 
     private lateinit var previewUi: KeyboardPreviewUi
 
-    private fun createTextView(@StringRes string: Int? = null, ripple: Boolean = false) = textView {
+    private fun createTextView(@StringRes string: Int? = null, ripple: Boolean = false) = view(::EmojiTextView) {
         if (string != null) {
             setText(string)
         }

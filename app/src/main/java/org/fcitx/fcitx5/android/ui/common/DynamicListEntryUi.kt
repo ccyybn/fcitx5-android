@@ -29,7 +29,8 @@ import splitties.views.dsl.core.checkBox
 import splitties.views.dsl.core.imageButton
 import splitties.views.dsl.core.imageView
 import splitties.views.dsl.core.matchParent
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 import splitties.views.imageDrawable
 import splitties.views.setPaddingDp
@@ -48,7 +49,7 @@ class DynamicListEntryUi(override val ctx: Context) : Ui {
 
     val checkBox = checkBox()
 
-    val nameText = textView {
+    val nameText = view(::EmojiTextView) {
         setPaddingDp(0, 16, 0, 16)
         textAppearance = ctx.resolveThemeAttribute(android.R.attr.textAppearanceListItem)
     }

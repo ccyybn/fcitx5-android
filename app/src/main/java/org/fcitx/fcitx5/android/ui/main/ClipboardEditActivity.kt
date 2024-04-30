@@ -10,7 +10,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
+import androidx.emoji2.widget.EmojiEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.NonCancellable
@@ -27,7 +27,7 @@ class ClipboardEditActivity : Activity() {
 
     private val scope: CoroutineScope = MainScope()
 
-    private lateinit var editText: EditText
+    private lateinit var editText: EmojiEditText
 
     private var entryId: Int = -1
 

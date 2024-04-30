@@ -43,7 +43,7 @@ import splitties.views.dsl.coordinatorlayout.coordinatorLayout
 import splitties.views.dsl.coordinatorlayout.defaultLParams
 import splitties.views.dsl.core.Ui
 import splitties.views.dsl.core.add
-import splitties.views.dsl.core.editText
+import androidx.emoji2.widget.EmojiEditText
 import splitties.views.dsl.core.margin
 import splitties.views.dsl.core.matchParent
 import splitties.views.dsl.core.view
@@ -241,7 +241,7 @@ abstract class BaseDynamicListUi<T>(
         block: (T) -> Unit
     ) {
         if (mode !is Mode.FreeAdd) return
-        val editText = editText {
+        val editText = view(::EmojiEditText) {
             hint = mode.hint
             if (entry != null) {
                 setText(showEntry(entry))

@@ -18,7 +18,8 @@ import splitties.views.dsl.core.horizontalMargin
 import splitties.views.dsl.core.lParams
 import splitties.views.dsl.core.matchParent
 import splitties.views.dsl.core.seekBar
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.verticalLayout
 import splitties.views.dsl.core.verticalMargin
 import splitties.views.gravityHorizontalCenter
@@ -93,7 +94,7 @@ class DialogSeekBarPreference @JvmOverloads constructor(
      * Shows the seek bar dialog.
      */
     private fun showSeekBarDialog() {
-        val textView = context.textView {
+        val textView = context.view(::EmojiTextView) {
             text = textForValue(value)
             textAppearance = context.resolveThemeAttribute(android.R.attr.textAppearanceListItem)
         }
@@ -107,7 +108,7 @@ class DialogSeekBarPreference @JvmOverloads constructor(
         val dialogContent = context.verticalLayout {
             gravity = gravityHorizontalCenter
             if (dialogMessage != null) {
-                val messageText = textView { text = dialogMessage }
+                val messageText = view(::EmojiTextView) { text = dialogMessage }
                 add(messageText, lParams {
                     verticalMargin = dp(8)
                     horizontalMargin = dp(24)

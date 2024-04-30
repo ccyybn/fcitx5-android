@@ -32,7 +32,7 @@ import splitties.views.dsl.core.frameLayout
 import splitties.views.dsl.core.imageView
 import splitties.views.dsl.core.lParams
 import splitties.views.dsl.core.matchParent
-import splitties.views.dsl.core.textView
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.view
 import splitties.views.dsl.core.wrapContent
 import splitties.views.gravityCenter
@@ -60,8 +60,7 @@ class StatusAreaEntryUi(override val ctx: Context, private val theme: Theme) : U
             setTypeface(typeface, Typeface.BOLD)
         }
     }
-
-    val label = textView {
+    val label = view(::EmojiTextView) {
         textSize = 12f
         gravity = gravityCenter
         setTextColor(theme.keyTextColor)

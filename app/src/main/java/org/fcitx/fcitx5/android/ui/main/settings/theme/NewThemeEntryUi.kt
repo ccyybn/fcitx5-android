@@ -22,12 +22,13 @@ import splitties.views.dsl.constraintlayout.topOfParent
 import splitties.views.dsl.core.Ui
 import splitties.views.dsl.core.add
 import splitties.views.dsl.core.imageView
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 import splitties.views.imageDrawable
 
 class NewThemeEntryUi(override val ctx: Context) : Ui {
-    val text = textView {
+    val text = view(::EmojiTextView) {
         setText(R.string.new_theme)
         setTextColor(Color.WHITE)
     }

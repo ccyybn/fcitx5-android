@@ -26,7 +26,7 @@ import splitties.views.dsl.core.Ui
 import splitties.views.dsl.core.add
 import splitties.views.dsl.core.imageView
 import splitties.views.dsl.core.lParams
-import splitties.views.dsl.core.textView
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.view
 import splitties.views.gravityCenter
 import splitties.views.imageDrawable
@@ -42,7 +42,7 @@ class PickerTabsUi(override val ctx: Context, val theme: Theme) : Ui {
 
         var position: Int = -1
 
-        val label = textView {
+        val label = view(::EmojiTextView) {
             textSize = 16f // sp
             typeface = Typeface.DEFAULT_BOLD
             setTextColor(theme.keyTextColor)

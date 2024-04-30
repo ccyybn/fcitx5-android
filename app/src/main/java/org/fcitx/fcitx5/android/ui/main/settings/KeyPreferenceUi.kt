@@ -32,24 +32,25 @@ import splitties.views.dsl.constraintlayout.startOfParent
 import splitties.views.dsl.constraintlayout.topOfParent
 import splitties.views.dsl.core.Ui
 import splitties.views.dsl.core.add
-import splitties.views.dsl.core.button
-import splitties.views.dsl.core.editText
+import androidx.emoji2.widget.EmojiEditText
+import androidx.appcompat.widget.AppCompatButton
 import splitties.views.dsl.core.imageButton
-import splitties.views.dsl.core.textView
+import splitties.views.dsl.core.view
+import androidx.emoji2.widget.EmojiTextView
 import splitties.views.dsl.core.wrapContent
 import splitties.views.gravityCenter
 import splitties.views.imageDrawable
 
 class KeyPreferenceUi(override val ctx: Context) : Ui {
 
-    private val textView = textView {
+    private val textView = view(::EmojiTextView) {
         gravity = gravityCenter
     }
 
     private inner class ModifierButton(label: String, val modifier: KeyState) : Ui {
         override val ctx = this@KeyPreferenceUi.ctx
 
-        override val root = button {
+        override val root = view(::AppCompatButton) {
             text = label
             isAllCaps = false
             // those 2 are both necessary, don't ask me why ´_>`
@@ -85,7 +86,7 @@ class KeyPreferenceUi(override val ctx: Context) : Ui {
         ModifierButton("Shift", KeyState.Shift)
     )
 
-    private val input = editText {
+    private val input = view(::EmojiEditText) {
         textSize = 16f // sp
         inputType = EditorInfo.TYPE_CLASS_TEXT or EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS
         imeOptions = EditorInfo.IME_FLAG_FORCE_ASCII
