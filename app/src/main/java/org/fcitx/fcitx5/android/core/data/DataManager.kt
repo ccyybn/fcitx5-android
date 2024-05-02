@@ -263,7 +263,7 @@ object DataManager {
                     removePath(it.path).getOrThrow()
                 }
                 is FileAction.DeleteFile -> {
-                    removePath(it.path).getOrThrow()
+//                    removePath(it.path).getOrThrow()
                 }
                 is FileAction.UpdateFile -> {
                     val assets = if (it.src is FileSource.Plugin)
