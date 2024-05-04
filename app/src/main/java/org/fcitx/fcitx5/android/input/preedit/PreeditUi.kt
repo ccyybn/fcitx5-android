@@ -29,6 +29,8 @@ import splitties.views.horizontalPadding
 
 class PreeditUi(override val ctx: Context, private val theme: Theme) : Ui {
 
+    var upStringWithCursor: SpannedString? = null
+
     class CursorSpan(ctx: Context, @ColorInt color: Int, metrics: Paint.FontMetricsInt) :
         DynamicDrawableSpan() {
         private val drawable = ShapeDrawable(RectShape()).apply {
@@ -110,6 +112,7 @@ class PreeditUi(override val ctx: Context, private val theme: Theme) : Ui {
             setSpan(cursorSpan, upCursor, upCursor + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             append(upString, upCursor, upString.length)
         }
+        this.upStringWithCursor = upStringWithCursor
         updateTextView(upView, upStringWithCursor, hasUp)
         updateTextView(downView, downString, hasDown)
     }

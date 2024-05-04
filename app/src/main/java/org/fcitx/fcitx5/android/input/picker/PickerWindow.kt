@@ -164,6 +164,7 @@ class PickerWindow(
         pickerLayout.embeddedKeyboard.also {
             it.onReturnDrawableUpdate(returnKeyDrawable.resourceId)
             it.keyActionListener = keyActionListener
+            it.commonKeyActionListener = commonKeyActionListener
         }
     }
 

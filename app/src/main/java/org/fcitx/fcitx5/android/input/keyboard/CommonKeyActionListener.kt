@@ -50,7 +50,7 @@ class CommonKeyActionListener :
 
     private val context by manager.context()
     private val fcitx by manager.fcitx()
-    private val service by manager.inputMethodService()
+    val service by manager.inputMethodService()
     private val inputView by manager.inputView()
     private val preeditState: PreeditEmptyStateComponent by manager.must()
     private val horizontalCandidate: HorizontalCandidateComponent by manager.must()
@@ -86,6 +86,10 @@ class CommonKeyActionListener :
                 inputView.showDialog(InputMethodPickerDialog.build(it, service, context))
             }
         }
+    }
+
+    fun isPreeditEmpty(): Boolean {
+        return preeditState.isEmpty && horizontalCandidate.adapter.total <= 0
     }
 
     val listener by lazy {
@@ -157,10 +161,7 @@ class CommonKeyActionListener :
                 is MoveSelectionAction -> {
                     when (backspaceSwipeState) {
                         Stopped -> {
-                            backspaceSwipeState = if (
-                                preeditState.isEmpty &&
-                                horizontalCandidate.adapter.total == 0
-                            ) {
+                            backspaceSwipeState = if (isPreeditEmpty()) {
                                 service.applySelectionOffset(action.start, action.end)
                                 Selection
                             } else {

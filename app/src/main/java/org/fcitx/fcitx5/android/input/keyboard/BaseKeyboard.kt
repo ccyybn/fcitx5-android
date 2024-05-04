@@ -48,7 +48,7 @@ abstract class BaseKeyboard(
     protected val theme: Theme,
     private val keyLayout: List<List<KeyDef>>
 ) : ConstraintLayout(context) {
-
+    var commonKeyActionListener: CommonKeyActionListener? = null
     var keyActionListener: KeyActionListener? = null
 
     private val prefs = AppPrefs.getInstance()
@@ -69,7 +69,7 @@ abstract class BaseKeyboard(
 
     var popupActionListener: PopupActionListener? = null
 
-    private val selectionSwipeThreshold = dp(10f)
+    private val selectionSwipeThreshold = dp(5f)
     private val inputSwipeThreshold = dp(36f)
 
     // a rather large threshold effectively disables swipe of the direction
@@ -162,11 +162,23 @@ abstract class BaseKeyboard(
                 swipeRepeatEnabled = true
                 swipeThresholdX = selectionSwipeThreshold
                 swipeThresholdY = disabledSwipeThreshold
-                onGestureListener = OnGestureListener { _, event ->
+                onGestureListener = OnGestureListener { view, event ->
                     when (event.type) {
                         GestureType.Move -> when (val count = event.countX) {
                             0 -> false
                             else -> {
+                                if (commonKeyActionListener?.isPreeditEmpty() == true) {
+                                    commonKeyActionListener?.service?.onUpdateCursorHandler =
+                                        Runnable { InputFeedbacks.hapticFeedback(view, false) }
+                                } else {
+                                    val upStringWithCursor =
+                                        commonKeyActionListener?.service?.inputView?.preedit?.ui?.upStringWithCursor.toString()
+                                    if ((count < 0 && !upStringWithCursor.startsWith('|')) ||
+                                        (count > 0 && upStringWithCursor.contains('|'))
+                                    ) {
+                                        InputFeedbacks.hapticFeedback(view, false)
+                                    }
+                                }
                                 val sym =
                                     if (count > 0) FcitxKeyMapping.FcitxKey_Right else FcitxKeyMapping.FcitxKey_Left
                                 val action = KeyAction.SymAction(KeySym(sym), KeyStates.Empty)
@@ -176,6 +188,10 @@ abstract class BaseKeyboard(
                                 true
                             }
                         }
+                        GestureType.Up -> {
+                            commonKeyActionListener?.service?.onUpdateCursorHandler = null
+                            false
+                        }
                         else -> false
                     }
                 }
@@ -184,16 +200,21 @@ abstract class BaseKeyboard(
                 swipeRepeatEnabled = true
                 swipeThresholdX = selectionSwipeThreshold
                 swipeThresholdY = disabledSwipeThreshold
-                onGestureListener = OnGestureListener { _, event ->
+                onGestureListener = OnGestureListener { view, event ->
                     when (event.type) {
                         GestureType.Move -> {
                             val count = event.countX
                             if (count != 0) {
+                                if (commonKeyActionListener?.isPreeditEmpty() == true) {
+                                    commonKeyActionListener?.service?.onUpdateCursorHandler =
+                                        Runnable { InputFeedbacks.hapticFeedback(view, false) }
+                                }
                                 onAction(KeyAction.MoveSelectionAction(count))
                                 true
                             } else false
                         }
                         GestureType.Up -> {
+                            commonKeyActionListener?.service?.onUpdateCursorHandler = null
                             onAction(KeyAction.DeleteSelectionAction(event.totalX))
                             false
                         }

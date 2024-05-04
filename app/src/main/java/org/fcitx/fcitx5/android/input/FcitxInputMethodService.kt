@@ -81,7 +81,7 @@ class FcitxInputMethodService : LifecycleInputMethodService() {
 
     private lateinit var pkgNameCache: PackageNameCache
 
-    private var inputView: InputView? = null
+    var inputView: InputView? = null
 
     private var capabilityFlags = CapabilityFlags.DefaultFlags
 
@@ -590,6 +590,8 @@ class FcitxInputMethodService : LifecycleInputMethodService() {
         inputView?.startInput(info, capabilityFlags, restarting)
     }
 
+    var onUpdateCursorHandler: Runnable? = null
+
     override fun onUpdateSelection(
         oldSelStart: Int,
         oldSelEnd: Int,
@@ -599,6 +601,7 @@ class FcitxInputMethodService : LifecycleInputMethodService() {
         candidatesEnd: Int
     ) {
         // onUpdateSelection can left behind when user types quickly enough, eg. long press backspace
+        onUpdateCursorHandler?.run()
         cursorUpdateIndex += 1
         Timber.d("onUpdateSelection: old=[$oldSelStart,$oldSelEnd] new=[$newSelStart,$newSelEnd]")
         handleCursorUpdate(newSelStart, newSelEnd, cursorUpdateIndex)
